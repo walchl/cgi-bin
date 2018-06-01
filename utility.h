@@ -2,7 +2,42 @@
 #define __UTILITY_H__
 
 
-char *parse_query( char *seek, char **key, char **value ){
+char *query_by_get(){
+	return getenv("QUERY_STRING") ;
+}
+
+
+char *query_by_post(){
+	static int capacity = 0 ;
+	static char *buffer = NULL ;
+
+	// get length of query
+	int query_len = atoi( getenv("CONTENT_LENGTH") ) ;
+	if( query_len == 0 )
+		return NULL ;
+
+	// enlarge capacity if necessary
+	if( capacity < query_len ){
+		if( buffer )
+			free( buffer ) ;
+
+		capacity = query_len *2 ;
+		buffer = (char*) malloc( capacity ) ;
+	}
+
+	// reset buffer
+	memset( buffer, 0, query_len ) ;
+
+	// read query
+	char scanf_format[8] ;
+	sprintf( scanf_format, "%%%dc", query_len ) ;
+	scanf( scanf_format, buffer ) ;
+
+	return buffer ;
+}
+
+
+char *parse_query( char *seek, char **key, char **value, char split ){
 	*key = seek ;
 	for( ; *seek && *seek!='=' ; seek++ ) ;
 	if( *seek ){
@@ -11,7 +46,7 @@ char *parse_query( char *seek, char **key, char **value ){
 	}
 
 	*value = seek ;
-	for( ; *seek && *seek!='&' && *seek!=10 ; seek++ ) ;
+	for( ; *seek && *seek!=split ; seek++ ) ;
 	if( *seek ){
 		*seek = '\0' ;
 		seek ++ ;
@@ -22,7 +57,7 @@ char *parse_query( char *seek, char **key, char **value ){
 
 
 void gen_token( char *token, int len_token, const char *user, const char *pass ){
-    int i ;
+	int i ;
 	for( i=0 ; i<len_token ; ){
 		token[i++] = *(user++) ;
 		if( i<len_token )
@@ -30,4 +65,5 @@ void gen_token( char *token, int len_token, const char *user, const char *pass )
 	}
 	token[len_token-1] = '\0' ;
 }
+
 #endif

@@ -10,29 +10,31 @@ int get_del_id(){
 	int id = -1 ;
 
 	// get query
-	int query_len = atoi( getenv("CONTENT_LENGTH") ) ;
-	char *query = (char*) malloc( query_len ) ;
-	memset( query, 0, query_len ) ;
-
-	char scanf_format[8] ;
-	sprintf( scanf_format, "%%%dc", query_len ) ;
-	scanf( scanf_format, query ) ;
+	char *query = query_by_post() ;
 
 	// print query
 	printf( "%s=\"%s\"<br><br>\n", "QUERY_STRING", query ) ;
 
 	// print query detail
+	int query_len = atoi( getenv("CONTENT_LENGTH") ) ;
 	printf( "query_len: %d<br>", query_len ) ;
 
 	int i ;
-	for( i=0 ; i<query_len ; i++ )
-		printf( "ascii of query[%d]: %d<br>", i, (unsigned)query[i] ) ;
+	for( i=0 ; i<query_len ; i++ ){
+		if( query[i] == 10 )
+			printf("<b>") ;
+
+		printf( "ascii of query[%d]: %d<br>", i, (unsigned int)query[i] ) ;
+
+		if( query[i] == 10 )
+			printf("</b>") ;
+	}
 
 	// parse query
 	char *seek = query ;
 	while( *seek ){
 		char *key, *value ;
-		seek = parse_query( seek, &key, &value ) ;
+		seek = parse_query( seek, &key, &value, 10 ) ;
 
 		if( !strcmp( key, "id" ) ){
 			sscanf( value, "%d", &id ) ;

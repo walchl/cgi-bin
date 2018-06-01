@@ -1,5 +1,5 @@
 <br><b>ADD NEW MESSAGE</b><br>
-<form>
+<form action=/cgi-bin/index.exe>
 	Name:<br>
 	<input type="text" name="firstname" value="%s"><input type="text" name="lastname" value="%s"><br>
 	Text:<br>

@@ -14,19 +14,19 @@ typedef struct _Record{
 } Record ;
 
 void set(Record *this, int id, const char *name, int score){
-    this->id = id ;
-    this->name = name ;
-    this->score = score ;
+	this->id = id ;
+	this->name = name ;
+	this->score = score ;
 }
 
 int smaller_than( const Record *this, const struct _Record *b, Cmp cmp ){
-    if( cmp == BY_ID )
-        return this->id < b->id ;
-    if( cmp == BY_NAME )
-        return this->name < b->name ;
-    if( cmp == BY_SCORE )
-        return this->score > b->score ;
-    return 0 ;
+	if( cmp == BY_ID )
+		return this->id < b->id ;
+	if( cmp == BY_NAME )
+		return this->name < b->name ;
+	if( cmp == BY_SCORE )
+		return this->score > b->score ;
+	return 0 ;
 }
 
 
@@ -35,7 +35,7 @@ Record *order[5] ;
 
 
 void sort_by( Cmp cmp ){
-    int i ;
+	int i ;
 	for( i=0 ; i<5 ; i++ )
 		order[i] = &record[i] ;
 
@@ -59,7 +59,7 @@ void process( char *query ){
 	while( seek && *seek ){
 		// get each (key, value) pair
 		char *key, *value ;
-		seek = parse_query( seek, &key, &value ) ;
+		seek = parse_query( seek, &key, &value, '&' ) ;
 
 		// if key is "sort_by"
 		if( !strcmp(key, "sort_by") ){
@@ -101,7 +101,7 @@ void web_out(){
 	printf( "</tr>\n" ) ;
 
 	// process query
-	char *query = getenv("QUERY_STRING") ;
+	char *query = query_by_get() ;
 	process( query ) ;
 
 	int i ;
