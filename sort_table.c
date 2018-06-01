@@ -7,7 +7,7 @@
 typedef enum {NONE, BY_ID, BY_NAME, BY_SCORE} Cmp ;
 
 
-typedef struct _Record{
+typedef struct{
 	int id ;
 	const char *name ;
 	int score ;
@@ -19,7 +19,7 @@ void set(Record *this, int id, const char *name, int score){
 	this->score = score ;
 }
 
-int smaller_than( const Record *this, const struct _Record *b, Cmp cmp ){
+int smaller_than( const Record *this, const Record *b, Cmp cmp ){
 	if( cmp == BY_ID )
 		return this->id < b->id ;
 	if( cmp == BY_NAME )
@@ -35,20 +35,19 @@ Record *order[5] ;
 
 
 void sort_by( Cmp cmp ){
-	int i ;
+	int i, j ;
 	for( i=0 ; i<5 ; i++ )
 		order[i] = &record[i] ;
 
-	for( i=1 ; i<5 ; i++ ){
-		int j = i ;
-		Record *pivot = order[i] ;
-		for( ; 0<j ; j-- ){
-			if( smaller_than(pivot, order[j-1], cmp) )
+	for( i=0 ; i<5 ; i++ ){
+		int end = 5-i ;
+		for( j=1 ; j<end ; j++ ){
+			if( smaller_than(order[j], order[j-1], cmp) ){
+				Record *tmp = order[j] ;
 				order[j] = order[j-1] ;
-			else
-				break ;
+				order[j-1] = tmp ;
+			}
 		}
-		order[j] =  pivot ;
 	}
 }
 
