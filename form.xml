@@ -1,0 +1,20 @@
+<br><b>ADD NEW MESSAGE</b><br>
+<form>
+	Name:<br>
+	<input type="text" name="firstname" value="%s"><input type="text" name="lastname" value="%s"><br>
+	Text:<br>
+	<input type="text" name="msg" value="Text %d">
+	<input type="submit" value="Submit">
+	<input type="hidden" name="lastpage" value="index">
+	<input type="hidden" name="token" value="%s">
+</form>
+
+<br><b>DELETE MESSAGE</b><br>
+<form action=/cgi-bin/del.exe method="POST" enctype="text/plain">
+	<input type="hidden" name="lastpage" value="index">
+	ID: <input type="text" name="id">
+	<input type="submit" value="Delete">
+</form>
+
+<br><a href="/cgi-bin/index.exe?lastpage=clear-db"><b>CLEAR DATABASE</b></a><br>
+<img src="/cgi-bin/img/light_logo.png"><img src="http://www.nthu.edu.tw//public/images/about06/logo.png">
