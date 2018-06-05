@@ -21,8 +21,9 @@ int db_show(){
 
 		for( ; fgets( line, sizeof(line), fin ) ; count++ )
 			printf( "#%d: %s<br>", count, line ) ;
+
+		fclose( fin ) ;
 	}
-	fclose( fin ) ;
 
 	return count ;
 }
@@ -30,8 +31,10 @@ int db_show(){
 
 void db_append( const char *record ){
 	FILE *fout = fopen( DB, "a" ) ;
-	fprintf( fout, "%s\n", record ) ;
-	fclose( fout ) ;
+	if( fout ){
+		fprintf( fout, "%s\n", record ) ;
+		fclose( fout ) ;
+	}
 }
 
 
@@ -45,19 +48,21 @@ void db_del(int id){
 	if( fin ){
 		FILE *fout = fopen( TMP, "w" ) ;
 
-		char line[MAX_RECORD_LEN] ;
+		if( fout ){
+			char line[MAX_RECORD_LEN] ;
 
-		int i ;
-		for( i=0 ; fgets(line, sizeof(line), fin ) ; i++ ){
-			if( i != id )
-				fprintf( fout, "%s", line ) ;
+			int i ;
+			for( i=0 ; fgets(line, sizeof(line), fin ) ; i++ ){
+				if( i != id )
+					fprintf( fout, "%s", line ) ;
+			}
+			fclose( fout ) ;
+
+			remove( DB ) ;
+			rename( TMP, DB ) ;
 		}
 
 		fclose( fin ) ;
-		fclose( fout ) ;
-
-		remove( DB ) ;
-		rename( TMP, DB ) ;
 	}
 }
 

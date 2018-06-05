@@ -88,9 +88,10 @@ void print_form( int count ){
 	char xml[1024] = {0} ;
 
 	FILE *fin = fopen( FORM, "r" ) ;
-	if( fin )
+	if( fin ){
 		fscanf( fin, "%1024c", xml ) ;
-	fclose( fin ) ;
+		fclose( fin ) ;
+	}
 
 	if( xml[0] ){
 		gen_token( token, sizeof(token), firstname, lastname ) ;
