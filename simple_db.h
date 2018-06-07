@@ -56,13 +56,13 @@ void db_del(int id){
 				if( i != id )
 					fprintf( fout, "%s", line ) ;
 			}
+
+			fclose( fin ) ;
 			fclose( fout ) ;
 
 			remove( DB ) ;
 			rename( TMP, DB ) ;
 		}
-
-		fclose( fin ) ;
 	}
 }
 
