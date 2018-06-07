@@ -84,7 +84,7 @@ void process( char *query_get, char *query_post ){
 		db_append( record ) ;
 }
 
-void print_form( int count ){
+void print_xml_form( int count ){
 	char xml[1024] = {0} ;
 
 	FILE *fin = fopen( FORM, "r" ) ;
@@ -107,10 +107,8 @@ void web_out(){
 	char *query_get = query_by_get() ;
 	char *query_post = query_by_post() ;
 
-	if( query_get )
-		printf( "%s<br>\"%s\"<br><br>\n", "QUERY_STRING(GET)", query_get ) ;
-	if( query_post )
-		printf( "%s<br>\"%s\"<br><br>\n", "QUERY_STRING(POST)", query_post ) ;
+	printf( "%s<br>\"%s\"<br><br>\n", "QUERY_STRING(GET)", query_get?query_get:"(NULL)" ) ;
+	printf( "%s<br>\"%s\"<br><br>\n", "QUERY_STRING(POST)", query_post?query_post:"(NULL)" ) ;
 
 	process( query_get, query_post ) ;
 
@@ -118,7 +116,7 @@ void web_out(){
 	int count = db_show() ;
 
 	// print forms
-	print_form( count ) ;
+	print_xml_form( count ) ;
 
 	printf("</body>\n</html>\n") ;
 }

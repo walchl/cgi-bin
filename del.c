@@ -13,7 +13,7 @@ int get_del_id(){
 	char *query = query_by_post() ;
 
 	// print query
-	printf( "%s=\"%s\"<br><br>\n", "QUERY_STRING", query ) ;
+	printf( "%s<br>\"%s\"<br><br>\n", "QUERY_STRING(POST)", query?query:"(NULL)" ) ;
 
 	// print query detail
 	int query_len = atoi( getenv("CONTENT_LENGTH") ) ;
