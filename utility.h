@@ -38,15 +38,35 @@ char *query_by_post(){
 
 
 char *parse_query( char *seek, char **key, char **value, char split ){
+	// set *key
 	*key = seek ;
-	for( ; *seek && *seek!='=' ; seek++ ) ;
+
+	//find the end of key
+	for( ; *seek && *seek!='=' ; seek++ ){
+		// Unicode detection "&#xxxxx;"
+		if( *seek=='&' && *(seek+1)=='#' ){
+			for( ; *seek && *seek!=';' ; seek++ ) ;
+			if( !*seek )
+				break ;
+		}
+	}
 	if( *seek ){
 		*seek = '\0' ;
 		seek ++ ;
 	}
 
+	// set *value
 	*value = seek ;
-	for( ; *seek && *seek!=split ; seek++ ) ;
+
+	// find the end of value
+	for( ; *seek && *seek!=split ; seek++ ){
+		// Unicode detection "&#xxxxx;"
+		if( *seek=='&' && *(seek+1)=='#' ){
+			for( ; *seek && *seek!=';' ; seek++ ) ;
+			if( !*seek )
+				break ;
+		}
+	}
 	if( *seek ){
 		*seek = '\0' ;
 		seek ++ ;
