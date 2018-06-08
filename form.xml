@@ -2,11 +2,12 @@
 <form action=/cgi-bin/index.exe>
 	Name:<br>
 	<input type="text" name="firstname" value="%s"><input type="text" name="lastname" value="%s"><br>
+	Login Token:<br>
+	<input type="text" name="token" value="%08X" readonly style="background-color:lightgray;"><br>
 	Text:<br>
 	<input type="text" name="msg" value="Text %d">
 	<input type="submit" value="Submit">
 	<input type="hidden" name="lastpage" value="index">
-	<input type="hidden" name="token" value="%s">
 	<input type="hidden" name="cmd" value="append-db">
 </form>
 

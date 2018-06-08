@@ -11,7 +11,6 @@ char _firstname[] = "First" ;
 char _lastname[] = "Last" ;
 char *firstname = _firstname ;
 char *lastname = _lastname ;
-char token[17] ;
 
 // char array for record insertion
 char record[MAX_RECORD_LEN] ;
@@ -102,8 +101,10 @@ void print_xml_form( int count ){
 	}
 
 	if( xml[0] ){
-		gen_token( token, sizeof(token), firstname, lastname ) ;
-		printf( xml, firstname, lastname, count, token ) ;
+		unsigned int token = 0 ;
+		if( firstname!=_firstname && lastname!=_lastname )
+			token = gen_token( firstname, lastname ) ;
+		printf( xml, firstname, lastname, token, count ) ;
 	}
 }
 

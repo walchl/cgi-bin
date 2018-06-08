@@ -76,14 +76,16 @@ char *parse_query( char *seek, char **key, char **value, char split ){
 }
 
 
-void gen_token( char *token, int len_token, const char *user, const char *pass ){
+unsigned int gen_token( const char *user, const char *pass ){
+	unsigned int token = 0 ;
+
 	int i ;
-	for( i=0 ; i<len_token ; ){
-		token[i++] = *(user++) ;
-		if( i<len_token )
-			token[i++] = *(pass++) ;
-	}
-	token[len_token-1] = '\0' ;
+	for( i=0 ; user[i] ; i++ )
+		token ^= ((unsigned int)user[i])<< ((i*9)%29) ;
+	for( i=0 ; pass[i] ; i++ )
+		token ^= ((unsigned int)pass[i])<< ((i*9)%29) ;
+
+	return token ;
 }
 
 #endif
