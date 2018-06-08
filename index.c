@@ -14,21 +14,29 @@ char *lastname = _lastname ;
 char token[17] ;
 
 // char array for record insertion
-char record[MAX_RECORD_LEN] = "" ;
+char record[MAX_RECORD_LEN] ;
 char *record_end = record ;
 
-// flag for database clearing
+// flag for database operation
 int clear_db = 0 ;
+int append_db = 0 ;
 
 
 // Process Query
 int process_key_value( char *key, char *value ){
-	// if key is "lastpage"
-	if( !strcmp(key, "lastpage") ){
+	// if key is "cmd"
+	if( !strcmp(key, "cmd") ){
 		if( !strcmp(value, "clear-db") ){
 			clear_db = 1 ;
 			return 1 ;
 		}
+		else if( !strcmp(value, "append-db") ){
+			append_db = 1 ;
+			return 1 ;
+		}
+	}
+	// if key is "lastpage"
+	else if( !strcmp(key, "lastpage") ){
 	}
 	// if key is "token"
 	else if( !strcmp(key, "token") ){
@@ -80,7 +88,7 @@ void process( char *query_get, char *query_post ){
 	// modify db
 	if( clear_db )
 		db_clear() ;
-	else if( record[0] )
+	else if( append_db )
 		db_append( record ) ;
 }
 
