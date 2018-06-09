@@ -9,12 +9,8 @@
 
 char _firstname[] = "First" ;
 char _lastname[] = "Last" ;
-char *firstname = _firstname ;
-char *lastname = _lastname ;
 
-// char array for record insertion
-char record[MAX_RECORD_LEN] ;
-char *record_end = record ;
+const char* record[KEYS] = {0} ;
 
 // flag for database operation
 int clear_db = 0 ;
@@ -22,17 +18,13 @@ int append_db = 0 ;
 
 
 // Process Query
-int process_key_value( char *key, char *value ){
+void process_key_value( char *key, char *value ){
 	// if key is "cmd"
 	if( !strcmp(key, "cmd") ){
-		if( !strcmp(value, "clear-db") ){
+		if( !strcmp(value, "clear-db") )
 			clear_db = 1 ;
-			return 1 ;
-		}
-		else if( !strcmp(value, "append-db") ){
+		else if( !strcmp(value, "append-db") )
 			append_db = 1 ;
-			return 1 ;
-		}
 	}
 	// if key is "lastpage"
 	else if( !strcmp(key, "lastpage") ){
@@ -42,18 +34,12 @@ int process_key_value( char *key, char *value ){
 	}
 	// other keys
 	else{
-		// append (key, value) to record
-		sprintf( record_end, "\t%s:\"%s\"", key, value ) ;
-		for( ; *record_end ; record_end++ ) ;
-
-		// modify names
-		if( !strcmp(key, "firstname") )
-			firstname = value ;
-		else if( !strcmp(key, "lastname") )
-			lastname = value ;
+		int j ;
+		for( j=0 ; j<KEYS ; j++ ){
+			if( !strcmp(key, db_record_key[j]) )
+				record[j] = value ;
+		}
 	}
-
-	return 0 ;
 }
 
 // Process Query
@@ -66,8 +52,7 @@ void process( char *query_get, char *query_post ){
 			char *key, *value ;
 			seek = parse_query( seek, &key, &value, '&' ) ;
 
-			if( process_key_value( key, value ) )
-				break ;
+			process_key_value( key, value ) ;
 		}
 	}
 
@@ -79,8 +64,7 @@ void process( char *query_get, char *query_post ){
 			char *key, *value ;
 			seek = parse_query( seek, &key, &value, 10 ) ;
 
-			if( process_key_value( key, value ) )
-				break ;
+			process_key_value( key, value ) ;
 		}
 	}
 
@@ -102,9 +86,14 @@ void print_xml_form( int count ){
 
 	if( xml[0] ){
 		unsigned int token = 0 ;
-		if( firstname!=_firstname && lastname!=_lastname )
-			token = gen_token( firstname, lastname ) ;
-		printf( xml, firstname, lastname, token, count ) ;
+		if( record[0] && record[1] )
+			token = gen_token( record[0], record[1] ) ;
+
+		if( !record[0] )
+			record[0] = _firstname ;
+		if( !record[1] )
+			record[1] = _lastname ;
+		printf( xml, record[0], record[1], token, count ) ;
 	}
 }
 
@@ -122,10 +111,10 @@ void web_out(){
 	process( query_get, query_post ) ;
 
 	// show database
-	int count = db_show() ;
+	db_show() ;
 
 	// print forms
-	print_xml_form( count ) ;
+	print_xml_form( db_record_num ) ;
 
 	printf("</body>\n</html>\n") ;
 }
