@@ -76,7 +76,7 @@ int main(){
 	web_out_head() ;
 
 	int id = get_del_id() ;
-	db_del( id ) ;
+	db_Del( id ) ;
 
 	web_out_final( id ) ;
 

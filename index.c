@@ -75,9 +75,9 @@ void process( char *query_get, char *query_post ){
 
 	// modify db
 	if( clear_db )
-		db_clear() ;
+		db_Clear() ;
 	else if( append_db )
-		db_append( record ) ;
+		db_Append( record ) ;
 }
 
 void print_xml_form( int count ){
@@ -116,8 +116,8 @@ void web_out_query( const char *query_get, const char *query_post ){
 
 
 void web_out_final(){
-	// show database
-	db_show() ;
+	// print database
+	db_Print_All() ;
 
 	// print forms
 	print_xml_form( db_record_num ) ;

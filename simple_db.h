@@ -40,7 +40,7 @@ db_record[i].msg
 */
 
 
-void db_write_all(){
+void db_Write_All(){
 	// if db is not loaded, abort.
 	if( !db_record_value )
 		return ;
@@ -82,7 +82,7 @@ void db_write_all(){
 }
 
 
-void db_read_all(){
+void db_Read_All(){
 	// if db is loaded, skip.
 	if( db_record_value )
 		return ;
@@ -144,8 +144,8 @@ void db_read_all(){
 }
 
 
-void db_show(){
-	db_read_all() ;
+void db_Print_All(){
+	db_Read_All() ;
 
 	int i, j ;
 	for( i=0 ; i < db_record_num ; i++ ){
@@ -157,8 +157,8 @@ void db_show(){
 }
 
 
-void db_append( const char **record_value ){
-	db_read_all() ;
+void db_Append( const char **record_value ){
+	db_Read_All() ;
 
 	char **record = (char**) malloc( KEYS*sizeof(char*) ) ;
 	db_record_value[db_record_num] = record ;
@@ -172,18 +172,18 @@ void db_append( const char **record_value ){
 			record[j] = utility_Duplicate( "" ) ;
 	}
 
-	db_write_all() ;
+	db_Write_All() ;
 }
 
 
-void db_clear(){
+void db_Clear(){
 	remove( DB_MSG ) ;
 	remove( DB_NAME ) ;
 }
 
 
-void db_del(int id){
-	db_read_all() ;
+void db_Del(int id){
+	db_Read_All() ;
 
 	if( id<0 || db_record_num<=id )
 		return ;
@@ -193,7 +193,7 @@ void db_del(int id){
 		db_record_value[i-1] = db_record_value[i] ;
 	db_record_num -- ;
 
-	db_write_all() ;
+	db_Write_All() ;
 }
 
 #endif
