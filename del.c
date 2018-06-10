@@ -34,7 +34,7 @@ int get_del_id(){
 	char *seek = query ;
 	while( *seek ){
 		char *key, *value ;
-		seek = parse_query( seek, &key, &value, 10 ) ;
+		seek = parse_query( seek, &key, &value, "\n" ) ;
 
 		if( !strcmp( key, "id" ) ){
 			sscanf( value, "%d", &id ) ;

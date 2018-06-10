@@ -58,7 +58,7 @@ void process( char *query ){
 	while( seek && *seek ){
 		// get each (key, value) pair
 		char *key, *value ;
-		seek = parse_query( seek, &key, &value, '&' ) ;
+		seek = parse_query( seek, &key, &value, "&" ) ;
 
 		// if key is "sort_by"
 		if( !strcmp(key, "sort_by") ){

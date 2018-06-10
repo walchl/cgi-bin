@@ -50,7 +50,7 @@ void process( char *query_get, char *query_post ){
 		while( *seek ){
 			// get each (key, value) pair
 			char *key, *value ;
-			seek = parse_query( seek, &key, &value, '&' ) ;
+			seek = parse_query( seek, &key, &value, "&" ) ;
 
 			process_key_value( key, value ) ;
 		}
@@ -62,7 +62,7 @@ void process( char *query_get, char *query_post ){
 		while( *seek ){
 			// get each (key, value) pair
 			char *key, *value ;
-			seek = parse_query( seek, &key, &value, 10 ) ;
+			seek = parse_query( seek, &key, &value, "\n" ) ;
 
 			process_key_value( key, value ) ;
 		}

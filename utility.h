@@ -1,6 +1,8 @@
 #ifndef __UTILITY_H__
 #define __UTILITY_H__
 
+#include <string.h>
+
 
 char *query_by_get(){
 	return getenv("QUERY_STRING") ;
@@ -37,45 +39,51 @@ char *query_by_post(){
 }
 
 
-char *parse_query( char *seek, char **key, char **value, char split ){
-	// set *key
-	*key = seek ;
+char *utility_duplicate_string(const char *src){
+	char *dst = (char*) malloc( (strlen(src)+1)*sizeof(char) ) ;
+	strcpy( dst, src ) ;
+	return dst ;
+}
 
-	//find the end of key
-	for( ; *seek && *seek!='=' ; seek++ ){
-		// Unicode detection "&#xxxxx;"
-		if( *seek=='&' && *(seek+1)=='#' ){
-			for( ; *seek && *seek!=';' ; seek++ ) ;
-			if( !*seek )
+
+// If POST is used, the Unicode character has the format "&#xxxxx;"
+// So feel free to use utility_trim() to process Unicode
+char *utility_trim(char *str, const char *split){
+	// scan str[]
+	char *seek ;
+	for( seek=str ; *seek ; seek++ ){
+		const char *sp ;
+		for( sp=split ; *sp ; sp++ ){
+			if( *sp == *seek )
 				break ;
 		}
+		if( *sp )
+			break ;
 	}
+
+	// if any char in split[] is found in str[]
 	if( *seek ){
 		*seek = '\0' ;
 		seek ++ ;
 	}
 
-	// set *value
-	*value = seek ;
-
-	// find the end of value
-	for( ; *seek && *seek!=split ; seek++ ){
-		// Unicode detection "&#xxxxx;"
-		if( *seek=='&' && *(seek+1)=='#' ){
-			for( ; *seek && *seek!=';' ; seek++ ) ;
-			if( !*seek )
-				break ;
-		}
-	}
-	if( *seek ){
-		*seek = '\0' ;
-		seek ++ ;
-	}
-
+	// return next starting location
 	return seek ;
 }
 
 
+// parse query string: (key)=(value)(split)(key)=(value)...(split)(key)=(value)
+char *parse_query( char *str, char **key, char **value, const char *split ){
+	char *next = utility_trim( str, split ) ;
+
+	*key = str ;
+	*value = utility_trim( *key, "=" ) ;
+
+	return next ;
+}
+
+
+// generate a unsigned 32-bit token from char user[] and char pass[]
 unsigned int gen_token( const char *user, const char *pass ){
 	unsigned int token = 0 ;
 

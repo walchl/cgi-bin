@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "utility.h"
+
 
 #define DB_MSG		"db_msg.txt"
 #define DB_NAME		"db_name.txt"
@@ -100,7 +102,7 @@ void db_read_all(){
 	// set db_record_num
 	if( fin_msg && fin_name ){
 		fgets( line, sizeof(line), fin_msg ) ;
-		db_record_num = atoi(line) ;
+		sscanf( line, "%d", &db_record_num ) ;
 	}
 
 	// allocate db_record_value
@@ -120,38 +122,23 @@ void db_read_all(){
 			for( j=0 ; j<KEYS ; j++ )
 				record[j] = EMPTY_STR ;
 
-			// read msg
+			// read fin_msg
 			if( fgets( line, sizeof(line), fin_msg ) ){
-				char *s ;
-				for( s=line ; *s && *s!='\n' ; s++ ) ;
-				if( *s )
-					*s = '\0' ;
-
-				record[2] = (char*) malloc( (strlen(line)+1)*sizeof(char) ) ;
-				strcpy( record[2], line ) ;
+				utility_trim( line, "\n" ) ;
+				record[2] = utility_duplicate_string( line ) ;
 			}
 
-			// read name
+			// read fin_name
 			if( fgets( line, sizeof(line), fin_name ) ){
-				char *s, *str ;
+				char *firstname = line ;
 
-				// firstname
-				for( str=s=line ; *s && *s!='\t' && *s!='\n' ; s++ ) ;
-				if( *s ){
-					*s = '\0' ;
-					s ++ ;
-				}
-				record[0] = (char*) malloc( (strlen(str)+1)*sizeof(char) ) ;
-				strcpy( record[0], str ) ;
+				// split firstname
+				char *lastname = utility_trim( firstname, "\t\n") ;
+				record[0] = utility_duplicate_string( firstname ) ;
 
-				// lastname
-				for( str=s ; *s && *s!='\t' && *s!='\n' ; s++ ) ;
-				if( *s ){
-					*s = '\0' ;
-					s ++ ;
-				}
-				record[1] = (char*) malloc( (strlen(str)+1)*sizeof(char) ) ;
-				strcpy( record[1], str ) ;
+				// split lastname
+				utility_trim( lastname, "\t\n" ) ;
+				record[1] = utility_duplicate_string( lastname ) ;
 			}
 		}
 
@@ -183,8 +170,10 @@ void db_append( const char **record_value ){
 
 	int j ;
 	for( j=0 ; j<KEYS ; j++ ){
-		record[j] = (char*) malloc( (strlen(record_value[j])+1)*sizeof(char) ) ;
-		strcpy( record[j], record_value[j] ) ;
+		if( record_value[j] )
+			record[j] = utility_duplicate_string( record_value[j] ) ;
+		else
+			record[j] = utility_duplicate_string( "" ) ;
 	}
 
 	db_write_all() ;
