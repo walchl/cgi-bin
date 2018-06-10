@@ -39,13 +39,6 @@ char *utility_Fetch_Query_By_POST(){
 }
 
 
-char *utility_Duplicate(const char *src){
-	char *dst = (char*) malloc( (strlen(src)+1)*sizeof(char) ) ;
-	strcpy( dst, src ) ;
-	return dst ;
-}
-
-
 // If POST is used, the Unicode character has the format "&#xxxxx;"
 // So feel free to use utility_trim() to process Unicode
 char *utility_Trim(char *str, const char *split){
@@ -80,6 +73,13 @@ char *utility_Parse_Query( char *str, char **key, char **value, const char *spli
 	*value = utility_Trim( *key, "=" ) ;
 
 	return next ;
+}
+
+
+char *utility_Duplicate(const char *src){
+	char *dst = (char*) malloc( (strlen(src)+1)*sizeof(char) ) ;
+	strcpy( dst, src ) ;
+	return dst ;
 }
 
 
