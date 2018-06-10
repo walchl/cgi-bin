@@ -50,7 +50,7 @@ void process( char *query_get, char *query_post ){
 		while( *seek ){
 			// get each (key, value) pair
 			char *key, *value ;
-			seek = parse_query( seek, &key, &value, "&" ) ;
+			seek = utility_Parse_Query( seek, &key, &value, "&" ) ;
 
 			process_key_value( key, value ) ;
 		}
@@ -62,7 +62,7 @@ void process( char *query_get, char *query_post ){
 		while( *seek ){
 			// get each (key, value) pair
 			char *key, *value ;
-			seek = parse_query( seek, &key, &value, "\n" ) ;
+			seek = utility_Parse_Query( seek, &key, &value, "\n" ) ;
 
 			process_key_value( key, value ) ;
 		}
@@ -87,7 +87,7 @@ void print_xml_form( int count ){
 	if( xml[0] ){
 		unsigned int token = 0 ;
 		if( record[0] && record[1] )
-			token = gen_token( record[0], record[1] ) ;
+			token = utility_Gen_Token( record[0], record[1] ) ;
 
 		if( !record[0] )
 			record[0] = _firstname ;
@@ -102,8 +102,8 @@ void web_out(){
 	printf("<html>\n<body>\n") ;
 
 	// process query
-	char *query_get = query_by_get() ;
-	char *query_post = query_by_post() ;
+	char *query_get = utility_Fetch_Query_By_GET() ;
+	char *query_post = utility_Fetch_Query_By_POST() ;
 
 	printf( "%s<br>\"%s\"<br><br>\n", "QUERY_STRING(GET)", query_get?query_get:"(NULL)" ) ;
 	printf( "%s<br>\"%s\"<br><br>\n", "QUERY_STRING(POST)", query_post?query_post:"(NULL)" ) ;

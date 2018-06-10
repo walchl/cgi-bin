@@ -4,12 +4,12 @@
 #include <string.h>
 
 
-char *query_by_get(){
+char *utility_Fetch_Query_By_GET(){
 	return getenv("QUERY_STRING") ;
 }
 
 
-char *query_by_post(){
+char *utility_Fetch_Query_By_POST(){
 	static int capacity = 0 ;
 	static char *buffer = NULL ;
 
@@ -39,7 +39,7 @@ char *query_by_post(){
 }
 
 
-char *utility_duplicate_string(const char *src){
+char *utility_Duplicate(const char *src){
 	char *dst = (char*) malloc( (strlen(src)+1)*sizeof(char) ) ;
 	strcpy( dst, src ) ;
 	return dst ;
@@ -48,7 +48,7 @@ char *utility_duplicate_string(const char *src){
 
 // If POST is used, the Unicode character has the format "&#xxxxx;"
 // So feel free to use utility_trim() to process Unicode
-char *utility_trim(char *str, const char *split){
+char *utility_Trim(char *str, const char *split){
 	// scan str[]
 	char *seek ;
 	for( seek=str ; *seek ; seek++ ){
@@ -73,18 +73,18 @@ char *utility_trim(char *str, const char *split){
 
 
 // parse query string: (key)=(value)(split)(key)=(value)...(split)(key)=(value)
-char *parse_query( char *str, char **key, char **value, const char *split ){
-	char *next = utility_trim( str, split ) ;
+char *utility_Parse_Query( char *str, char **key, char **value, const char *split ){
+	char *next = utility_Trim( str, split ) ;
 
 	*key = str ;
-	*value = utility_trim( *key, "=" ) ;
+	*value = utility_Trim( *key, "=" ) ;
 
 	return next ;
 }
 
 
 // generate a unsigned 32-bit token from char user[] and char pass[]
-unsigned int gen_token( const char *user, const char *pass ){
+unsigned int utility_Gen_Token( const char *user, const char *pass ){
 	unsigned int token = 0 ;
 
 	int i ;

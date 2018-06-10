@@ -124,8 +124,8 @@ void db_read_all(){
 
 			// read fin_msg
 			if( fgets( line, sizeof(line), fin_msg ) ){
-				utility_trim( line, "\n" ) ;
-				record[2] = utility_duplicate_string( line ) ;
+				utility_Trim( line, "\n" ) ;
+				record[2] = utility_Duplicate( line ) ;
 			}
 
 			// read fin_name
@@ -133,12 +133,12 @@ void db_read_all(){
 				char *firstname = line ;
 
 				// split firstname
-				char *lastname = utility_trim( firstname, "\t\n") ;
-				record[0] = utility_duplicate_string( firstname ) ;
+				char *lastname = utility_Trim( firstname, "\t\n") ;
+				record[0] = utility_Duplicate( firstname ) ;
 
 				// split lastname
-				utility_trim( lastname, "\t\n" ) ;
-				record[1] = utility_duplicate_string( lastname ) ;
+				utility_Trim( lastname, "\t\n" ) ;
+				record[1] = utility_Duplicate( lastname ) ;
 			}
 		}
 
@@ -171,9 +171,9 @@ void db_append( const char **record_value ){
 	int j ;
 	for( j=0 ; j<KEYS ; j++ ){
 		if( record_value[j] )
-			record[j] = utility_duplicate_string( record_value[j] ) ;
+			record[j] = utility_Duplicate( record_value[j] ) ;
 		else
-			record[j] = utility_duplicate_string( "" ) ;
+			record[j] = utility_Duplicate( "" ) ;
 	}
 
 	db_write_all() ;

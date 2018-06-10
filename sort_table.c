@@ -58,7 +58,7 @@ void process( char *query ){
 	while( seek && *seek ){
 		// get each (key, value) pair
 		char *key, *value ;
-		seek = parse_query( seek, &key, &value, "&" ) ;
+		seek = utility_Parse_Query( seek, &key, &value, "&" ) ;
 
 		// if key is "sort_by"
 		if( !strcmp(key, "sort_by") ){
@@ -100,7 +100,7 @@ void web_out(){
 	printf( "</tr>\n" ) ;
 
 	// process query
-	char *query = query_by_get() ;
+	char *query = utility_Fetch_Query_By_GET() ;
 	process( query ) ;
 
 	int i ;

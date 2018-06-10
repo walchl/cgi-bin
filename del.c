@@ -10,7 +10,7 @@ int get_del_id(){
 	int id = -1 ;
 
 	// get query
-	char *query = query_by_post() ;
+	char *query = utility_Fetch_Query_By_POST() ;
 
 	// print query
 	printf( "%s<br>\"%s\"<br><br>\n", "QUERY_STRING(POST)", query?query:"(NULL)" ) ;
@@ -34,7 +34,7 @@ int get_del_id(){
 	char *seek = query ;
 	while( *seek ){
 		char *key, *value ;
-		seek = parse_query( seek, &key, &value, "\n" ) ;
+		seek = utility_Parse_Query( seek, &key, &value, "\n" ) ;
 
 		if( !strcmp( key, "id" ) ){
 			sscanf( value, "%d", &id ) ;
