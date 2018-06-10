@@ -39,8 +39,6 @@ db_record[i].lastname
 db_record[i].msg
 */
 
-char EMPTY_STR[] = "" ;
-
 
 void db_write_all(){
 	// if db is not loaded, abort.
@@ -73,13 +71,9 @@ void db_write_all(){
 	if( db_record_value ){
 		int i, j ;
 		for( i=0 ; i<db_record_num ; i++ ){
-			if( db_record_value[i] ){
-				for( j=0 ; j<KEYS ; j++ ){
-					if( db_record_value[i][j] != EMPTY_STR )
-						free( db_record_value[i][j] ) ;
-				}
-				free( db_record_value[i] ) ;
-			}
+			for( j=0 ; j<KEYS ; j++ )
+				free( db_record_value[i][j] ) ;
+			free( db_record_value[i] ) ;
 		}
 		free( db_record_value ) ;
 		db_record_value = NULL ;
@@ -108,19 +102,15 @@ void db_read_all(){
 	// allocate db_record_value
 	db_record_value = (char***) malloc( (db_record_num+1) * sizeof(char**) ) ;
 
-	int i, j ;
-	for( i=0 ; i<=db_record_num ; i++ )
-		db_record_value[i] = NULL ;
-
 	// read all records
 	if( fin_msg && fin_name ){
-		for( int i=0 ; i<db_record_num ; i++ ){
+		int i, j ;
+		for( i=0 ; i<db_record_num ; i++ ){
 			// prepare record
 			char **record = (char**) malloc( KEYS*sizeof(char*) ) ;
-			db_record_value[i] = record ;
-
 			for( j=0 ; j<KEYS ; j++ )
-				record[j] = EMPTY_STR ;
+				record[j] = NULL ;
+			db_record_value[i] = record ;
 
 			// read fin_msg
 			if( fgets( line, sizeof(line), fin_msg ) ){
@@ -139,6 +129,12 @@ void db_read_all(){
 				// split lastname
 				utility_Trim( lastname, "\t\n" ) ;
 				record[1] = utility_Duplicate( lastname ) ;
+			}
+
+			// final check record
+			for( j=0 ; j<KEYS ; j++ ){
+				if( record[j] == NULL )
+					record[j] = utility_Duplicate( "" ) ;
 			}
 		}
 
