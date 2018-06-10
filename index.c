@@ -10,7 +10,7 @@
 char _firstname[] = "First" ;
 char _lastname[] = "Last" ;
 
-const char* record[KEYS] = {0} ;
+const char* record[KEYS] ;
 
 // flag for database operation
 int clear_db = 0 ;
@@ -44,8 +44,13 @@ void process_key_value( char *key, char *value ){
 
 // Process Query
 void process( char *query_get, char *query_post ){
+	// reset record
+	int j ;
+	for( j=0 ; j<KEYS ; j++ )
+		record[j] = NULL ;
+
 	// parse query_get
-	if( query_get && *query_get ){
+	if( query_get ){
 		char *seek = query_get ;
 		while( *seek ){
 			// get each (key, value) pair
@@ -57,7 +62,7 @@ void process( char *query_get, char *query_post ){
 	}
 
 	// parse query_post
-	if( query_post && *query_post ){
+	if( query_post ){
 		char *seek = query_post ;
 		while( *seek ){
 			// get each (key, value) pair
@@ -93,23 +98,24 @@ void print_xml_form( int count ){
 			record[0] = _firstname ;
 		if( !record[1] )
 			record[1] = _lastname ;
+
 		printf( xml, record[0], record[1], token, count ) ;
 	}
 }
 
 
-void web_out(){
+void web_out_head(){
 	printf("<html>\n<body>\n") ;
+}
 
-	// process query
-	char *query_get = utility_Fetch_Query_By_GET() ;
-	char *query_post = utility_Fetch_Query_By_POST() ;
 
+void web_out_query( const char *query_get, const char *query_post ){
 	printf( "%s<br>\"%s\"<br><br>\n", "QUERY_STRING(GET)", query_get?query_get:"(NULL)" ) ;
 	printf( "%s<br>\"%s\"<br><br>\n", "QUERY_STRING(POST)", query_post?query_post:"(NULL)" ) ;
+}
 
-	process( query_get, query_post ) ;
 
+void web_out_final(){
 	// show database
 	db_show() ;
 
@@ -121,7 +127,18 @@ void web_out(){
 
 
 int main(){
-	web_out() ;
+	web_out_head() ;
+
+	// get query
+	char *query_get = utility_Fetch_Query_By_GET() ;
+	char *query_post = utility_Fetch_Query_By_POST() ;
+
+	web_out_query( query_get, query_post ) ;
+
+	// process query
+	process( query_get, query_post ) ;
+
+	web_out_final() ;
 
 	return 0 ;
 }

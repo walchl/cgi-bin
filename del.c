@@ -6,12 +6,7 @@
 #include "utility.h"
 
 
-int get_del_id(){
-	int id = -1 ;
-
-	// get query
-	char *query = utility_Fetch_Query_By_POST() ;
-
+void print_query_detail( const char *query ){
 	// print query
 	printf( "%s<br>\"%s\"<br><br>\n", "QUERY_STRING(POST)", query?query:"(NULL)" ) ;
 
@@ -21,38 +16,55 @@ int get_del_id(){
 
 	int i ;
 	for( i=0 ; i<query_len ; i++ ){
-		if( query[i] == 10 )
+		if( query[i] == '\n' || query[i] == '=' )
 			printf("<b>") ;
 
-		printf( "ascii of query[%d]: %d<br>", i, (unsigned int)query[i] ) ;
+		printf( "query[%d]: ", i ) ;
+		if( query[i] == '\n' )
+			printf( "'%s'", "\\n" ) ;
+		else
+			printf( "'%c'", query[i] ) ;
+		printf( "<br>" ) ;
 
-		if( query[i] == 10 )
+		if( query[i] == '\n' || query[i] == '=' )
 			printf("</b>") ;
 	}
+}
 
-	// parse query
-	char *seek = query ;
-	while( *seek ){
-		char *key, *value ;
-		seek = utility_Parse_Query( seek, &key, &value, "\n" ) ;
 
-		if( !strcmp( key, "id" ) ){
-			sscanf( value, "%d", &id ) ;
-			break ;
+int get_del_id(){
+	int id = -1 ;
+
+	// get query
+	char *query = utility_Fetch_Query_By_POST() ;
+	print_query_detail( query ) ;
+
+	if( query ){
+		// parse query
+		char *seek = query ;
+		while( *seek ){
+			char *key, *value ;
+			seek = utility_Parse_Query( seek, &key, &value, "\n" ) ;
+
+			if( !strcmp( key, "id" ) ){
+				sscanf( value, "%d", &id ) ;
+				break ;
+			}
 		}
+
+		free( query ) ;
 	}
 
-	free( query ) ;
 	return id ;
 }
 
 
-void web_out(){
+void web_out_head(){
 	printf("<html><meta http-equiv=\"refresh\" content=\"15; url=/cgi-bin/index.exe?lastpage=del_refresh\" />\n<body>\n") ;
+}
 
-	int id = get_del_id() ;
-	db_del( id ) ;
 
+void web_out_final( int id ){
 	printf("<br><b>DELETE MESSAGE #%d.</b><br>", id) ;
 	printf( "<br><a href=\"/cgi-bin/index.exe?lastpage=del_hyperlink\">Redirect to index.exe</a>, or wait for 15 seconds.<br>\n" ) ;
 
@@ -61,7 +73,12 @@ void web_out(){
 
 
 int main(){
-	web_out() ;
+	web_out_head() ;
+
+	int id = get_del_id() ;
+	db_del( id ) ;
+
+	web_out_final( id ) ;
 
 	return 0 ;
 }
