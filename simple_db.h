@@ -67,7 +67,7 @@ void db_Write_All(){
 		fclose( fout_name ) ;
 	}
 
-	// clear memory
+	// free memory
 	if( db_record_value ){
 		int i, j ;
 		for( i=0 ; i<db_record_num ; i++ ){
@@ -188,7 +188,14 @@ void db_Del(int id){
 	if( id<0 || db_record_num<=id )
 		return ;
 
-	int i ;
+	int i, j ;
+
+	// free memory
+	for( j=0 ; j<KEYS ; j++ )
+			free( db_record_value[id][j] ) ;
+	free( db_record_value[id] ) ;
+
+	// shift
 	for( i=id+1 ; i<db_record_num ; i++ )
 		db_record_value[i-1] = db_record_value[i] ;
 	db_record_num -- ;
